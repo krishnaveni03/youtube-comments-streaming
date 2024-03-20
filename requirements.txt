@@ -1,6 +1,5 @@
 google-api-python-client
 tensorflow
 streamlit
-re
 random
 json
