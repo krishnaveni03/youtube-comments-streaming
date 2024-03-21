@@ -7,8 +7,15 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import json
 
-# Load your trained sentiment analysis model
-model = keras.models.load_model('sentiment_analysis.h5')
+# Get the absolute path to the model file
+model_file_path = os.path.join(os.path.dirname(__file__), 'sentiment_analysis.h5')
+
+# Load the Keras model
+try:
+    model = keras.models.load_model(model_file_path)
+except Exception as e:
+    # Handle the error
+    print(f"Error loading Keras model: {e}")
 
 # Tokenizer configuration (must match the one used for training)
 max_words = 10000
