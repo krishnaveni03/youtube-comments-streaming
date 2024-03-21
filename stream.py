@@ -73,10 +73,12 @@ def main():
         if video_id:
             comments = get_random_comments(video_id)
             selected_comment = st.selectbox('Select a comment:', comments)
-            if selected_comment:
+            if selected_comment is not None:  # Check if selected_comment is not None
                 sentiment = predict_sentiment(selected_comment, model, tokenizer)
                 st.write('Selected Comment:', selected_comment)
                 st.write('Predicted Sentiment:', sentiment)
+            else:
+                st.warning("Please select a comment.")
         else:
             st.error("Invalid YouTube video link format.")
 
