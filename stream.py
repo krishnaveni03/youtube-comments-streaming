@@ -6,9 +6,17 @@ from tensorflow import keras
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import json
+import os
 
-# Load your trained sentiment analysis model
-model = keras.models.load_model('sentiment_analysis.h5')
+# Get the absolute path to the model file
+model_file_path = 'sentiment_analysis.h5'  # Change the path as per your file location
+
+# Load the Keras model
+try:
+    model = keras.models.load_model(model_file_path)
+except Exception as e:
+    # Handle the error
+    st.error(f"Failed to load the model file: {e}")
 
 # Tokenizer configuration (must match the one used for training)
 max_words = 10000
@@ -66,9 +74,12 @@ def main():
             comments = get_random_comments(video_id)
             selected_comment = st.selectbox('Select a comment:', comments)
             if selected_comment:
-                sentiment = predict_sentiment(selected_comment, model, tokenizer)
-                st.write('Selected Comment:', selected_comment)
-                st.write('Predicted Sentiment:', sentiment)
+                try:
+                    sentiment = predict_sentiment(selected_comment, model, tokenizer)
+                    st.write('Selected Comment:', selected_comment)
+                    st.write('Predicted Sentiment:', sentiment)
+                except Exception as e:
+                    st.error(f"Error predicting sentiment: {e}")
         else:
             st.error("Invalid YouTube video link format.")
 
