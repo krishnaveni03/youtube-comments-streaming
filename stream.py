@@ -56,8 +56,15 @@ def get_random_comments(video_id):
     st.error(f"Error fetching comments: {error_message}")
   return comments
 
-def predict_sentiment(comment, model, tokenizer, threshold=0.5):
-  # Pass the model and tokenizer as arguments (not required in this case)
+def predict_sentiment(comment, tokenizer, threshold=0.5):
+  # **Load the model within the function (alternative approach)**
+  try:
+    global model  # Access the globally declared model
+  except NameError:
+    # If model is not yet loaded, load it here
+    model = keras.models.load_model(model_file_path)
+    print("Model loaded within predict_sentiment function.")
+
   tokenizer.fit_on_texts([comment])
   sequences = tokenizer.texts_to_sequences([comment])
   X = pad_sequences(sequences, maxlen=100)
@@ -76,7 +83,7 @@ def main():
       comments = get_random_comments(video_id)
       selected_comment = st.selectbox('Select a comment:', comments)
       if selected_comment is not None:  # Check if selected_comment is not None
-        sentiment = predict_sentiment(selected_comment, model, tokenizer)
+        sentiment = predict_sentiment(selected_comment, tokenizer)
         st.write('Selected Comment:', selected_comment)
         st.write('Predicted Sentiment:', sentiment)
       else:
