@@ -27,10 +27,33 @@ DEVELOPER_KEY = 'AIzaSyDub1h7J9kgxhRTZaWHi7HH-3Nr5DMzWYA'
 youtube = googleapiclient.discovery.build("youtube", "v3", developerKey=DEVELOPER_KEY)
 
 def extract_video_id(video_link):
-    # ... (code remains the same)
+    video_id_match = re.search(r"(?<=v=)[^&]+", video_link)
+    if video_id_match:
+        return video_id_match.group(0)
+    else:
+        video_id_match = re.search(r"youtu\.be/([^&]+)", video_link)
+        if video_id_match:
+            return video_id_match.group(1)
+    return None
 
 def get_random_comments(video_id):
-    # ... (code remains the same)
+    comments = []
+    try:
+        request = youtube.commentThreads().list(
+            part="snippet",
+            videoId=video_id,
+            maxResults=random.randint(5, 10)
+        )
+        response = request.execute()
+        for comment in response["items"]:
+            comments.append(comment["snippet"]["topLevelComment"]["snippet"]["textDisplay"])
+    except googleapiclient.errors.HttpError as e:
+        error_message = e.content.decode("utf-8")
+        error_details = json.loads(error_message)
+        if "error" in error_details and "message" in error_details["error"]:
+            error_message = error_details["error"]["message"]
+        st.error(f"Error fetching comments: {error_message}")
+    return comments
 
 def predict_sentiment(comment, tokenizer, model=model, threshold=0.5):
     if model is None:  # Check if model is loaded
