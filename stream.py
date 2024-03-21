@@ -6,7 +6,7 @@ from tensorflow import keras
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import json
-
+import os
 # Get the absolute path to the model file
 model_file_path = os.path.join(os.path.dirname(__file__), 'sentiment_analysis.h5')
 
