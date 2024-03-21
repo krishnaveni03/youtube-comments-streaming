@@ -10,8 +10,11 @@ import os
 
 # Load and store the Keras model directly
 model_file_path = os.path.join(os.path.dirname(__file__), 'sentiment_analysis.h5')
-model = keras.models.load_model(model_file_path)
-
+try:
+    model = keras.models.load_model(model_file_path)
+except Exception as e:
+    print(f"Error loading Keras model: {e}")
+    model = None  # Set model to None if loading fails
 
 # Tokenizer configuration (must match the one used for training)
 max_words = 10000
