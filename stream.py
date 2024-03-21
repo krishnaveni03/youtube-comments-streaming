@@ -27,7 +27,7 @@ max_words = 10000
 tokenizer = Tokenizer(num_words=max_words)
 
 # Initialize the YouTube Data API client
-DEVELOPER_KEY = 'YOUR_DEVELOPER_KEY'
+DEVELOPER_KEY = 'AIzaSyDub1h7J9kgxhRTZaWHi7HH-3Nr5DMzWYA'
 youtube = googleapiclient.discovery.build("youtube", "v3", developerKey=DEVELOPER_KEY)
 
 # Define the remaining functions
