@@ -43,7 +43,7 @@ def main():
             comments = get_random_comments(video_id)
             selected_comment = st.selectbox('Select a comment:', comments)
             if selected_comment is not None:  # Check if selected_comment is not None
-                sentiment = predict_sentiment(selected_comment, model, tokenizer)
+                sentiment = predict_sentiment(selected_comment, model_file_path, tokenizer)
                 st.write('Selected Comment:', selected_comment)
                 st.write('Predicted Sentiment:', sentiment)
             else:
