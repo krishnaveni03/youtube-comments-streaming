@@ -6,17 +6,9 @@ from tensorflow import keras
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import json
-import os
 
-# Get the absolute path to the model file (adjust as needed)
-model_file_path = os.path.join(os.path.dirname(__file__), 'sentiment_analysis.h5')  # Assuming model is in the same directory
-
-# Load the Keras model (with error handling)
-try:
-  model = keras.models.load_model(model_file_path)
-except Exception as e:
-  st.error(f"Failed to load the model file: {e}")
-  model = None  # Set model to None if loading fails
+# Load your trained sentiment analysis model
+model = keras.models.load_model('sentiment_analysis.h5')
 
 # Tokenizer configuration (must match the one used for training)
 max_words = 10000
@@ -55,10 +47,7 @@ def get_random_comments(video_id):
         st.error(f"Error fetching comments: {error_message}")
     return comments
 
-def predict_sentiment(comment, tokenizer, model=model, threshold=0.5):
-    if model is None:  # Check if model is loaded
-        return "Model not loaded"
-
+def predict_sentiment(comment, model, tokenizer, threshold=0.5):
     tokenizer.fit_on_texts([comment])
     sequences = tokenizer.texts_to_sequences([comment])
     X = pad_sequences(sequences, maxlen=100)
@@ -77,14 +66,11 @@ def main():
             comments = get_random_comments(video_id)
             selected_comment = st.selectbox('Select a comment:', comments)
             if selected_comment:
-                try:
-                    sentiment = predict_sentiment(selected_comment, tokenizer, model=model)
-                    st.write('Selected Comment:', selected_comment)
-                    st.write('Predicted Sentiment:', sentiment)
-                except Exception as e:
-                    st.error(f"Error predicting sentiment: {e}")
+                sentiment = predict_sentiment(selected_comment, model, tokenizer)
+                st.write('Selected Comment:', selected_comment)
+                st.write('Predicted Sentiment:', sentiment)
         else:
             st.error("Invalid YouTube video link format.")
 
 if __name__ == '__main__':
-  main()
+    main()
