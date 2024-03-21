@@ -8,16 +8,10 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 import json
 import os
 
-# Get the absolute path to the model file
+# Load and store the Keras model directly
 model_file_path = os.path.join(os.path.dirname(__file__), 'sentiment_analysis.h5')
+model = keras.models.load_model(model_file_path)
 
-# Load the Keras model (outside the main function for proper scope)
-try:
-  global model  # Declare model as global for accessibility within functions
-  model = keras.models.load_model(model_file_path)
-except Exception as e:
-  # Handle the error
-  print(f"Error loading Keras model: {e}")
 
 # Tokenizer configuration (must match the one used for training)
 max_words = 10000
@@ -57,20 +51,15 @@ def get_random_comments(video_id):
   return comments
 
 def predict_sentiment(comment, tokenizer, threshold=0.5):
-  # **Load the model within the function (alternative approach)**
-  try:
-    global model  # Access the globally declared model
-  except NameError:
-    # If model is not yet loaded, load it here
-    model = keras.models.load_model(model_file_path)
-    print("Model loaded within predict_sentiment function.")
+    if model is None:  # Check if the model is loaded
+        raise ValueError("Model is not loaded. Please check model loading.")
 
-  tokenizer.fit_on_texts([comment])
-  sequences = tokenizer.texts_to_sequences([comment])
-  X = pad_sequences(sequences, maxlen=100)
-  prediction = model.predict(X)
-  sentiment = "positive" if prediction[0][0] > threshold else "negative"
-  return sentiment
+    tokenizer.fit_on_texts([comment])
+    sequences = tokenizer.texts_to_sequences([comment])
+    X = pad_sequences(sequences, maxlen=100)
+    prediction = model.predict(X)
+    sentiment = "positive" if prediction[0][0] > threshold else "negative"
+    return sentiment
 
 def main():
   st.title('Sentiment Analysis on YouTube Comments')
