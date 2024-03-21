@@ -9,11 +9,11 @@ import json
 import os
 
 # Get the absolute path to the model file
-model_file_path = os.path.join(os.path.dirname(__file__), 'sentiment_analysis.h5')
+model= os.path.join(os.path.dirname(__file__), 'sentiment_analysis.h5')
 
 # Load the Keras model (place this outside the main function)
 try:
-  model = keras.models.load_model(model_file_path)
+  model = keras.models.load_model(model)
 except Exception as e:
   # Handle the error
   print(f"Error loading Keras model: {e}")
