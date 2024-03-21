@@ -6,7 +6,6 @@ from tensorflow import keras
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import json
-import os
 
 # Get the absolute path to the model file
 model_file_path = 'sentiment_analysis.h5'  # Change the path as per your file location
@@ -17,6 +16,7 @@ try:
 except Exception as e:
     # Handle the error
     st.error(f"Failed to load the model file: {e}")
+    raise e
 
 # Tokenizer configuration (must match the one used for training)
 max_words = 10000
